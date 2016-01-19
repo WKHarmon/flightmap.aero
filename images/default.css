@@ -1,0 +1,154 @@
+html {
+  height: auto;
+}
+
+.input {
+   text-align: right;
+   vertical-align: middle;
+}
+
+.label {
+	text-align: left;
+	vertical-align: middle;
+	background-color: #F2F2F2;
+	color: #000;
+}
+
+body {
+  height: auto;
+  margin: 0;
+  padding: 0;
+  font-family: "Arial";
+}
+
+#map_canvas {
+  height: auto;
+  position: absolute;
+  bottom:0;
+  left:0;
+  right:0;
+  top:0;
+}
+
+@media print {
+  #map_canvas {
+    height: 950px;
+  }
+}
+
+#titleblock, #titleblock a, #titleblock a:visited {
+   background-color: #FFF3E0;
+   color: #000;
+   font-weight: bold;
+   font-size: 120%;
+   text-align: center;
+   text-decoration: none;
+}
+
+#identifier {
+   width: 50px;
+   background-color: #FFE0E0;
+   float: left;
+   padding: 5px;
+}
+
+#name {
+   left: 50px;
+   padding: 5px;
+}
+
+#name a:hover {
+   text-decoration: underline;
+}
+
+#city {
+   clear: both;
+   text-align: center;
+   font-size: 75%;
+   background-color: #EFEDED;
+}
+
+#other {
+   clear: both;
+}
+
+.overlay {
+	background-color: #FFF;
+	color: #000;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 5px;
+	list-style: none;
+/*	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=80)"; // first!
+	filter: alpha(opacity=80);	
+	opacity: .8;*/
+}
+
+#states {
+	font-size: 80%;
+	margin-left: 10px;
+	line-height: 130%;
+}
+
+.statename {
+	font-weight: bold;
+}
+
+#key {
+	margin-right: 10px;
+}
+
+#control {
+	margin-right: 10px;
+	font-size: 80%
+}
+
+#photos {
+	width: 100%;
+}
+
+#photos td {
+	width: 33%;
+	text-align: center;
+	vertical-align: middle;
+}
+
+#total_photos {
+	font-size: 80%;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #EFEDED;
+	width: 100%;
+}
+
+#timestamp {
+	font-size: 90%;
+	color: #A5A5A5;
+}
+
+#shout {
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	font-style: italic;
+	border: 1px dashed #A5A5A5;
+	margin: 0 10px;
+	padding: 5px;
+	vertical-align:middle;
+	overflow:auto;
+}
+
+#shout img {
+	float:left;
+	margin-right: 10px;
+	border: 2px solid black;
+}
+
+.modal {
+	margin: 10px;
+}
+
+#location_admin {
+	text-align: center;
+	font-variant: small-caps;
+	font-size: 80%
+}

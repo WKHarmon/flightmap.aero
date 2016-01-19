@@ -1,0 +1,8 @@
+config.php
+cgi-bin
+dev
+test
+\*
+.well_known
+.DS_Store
+.svn
