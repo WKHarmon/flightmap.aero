@@ -6,8 +6,7 @@
 		exit;
 	}
 	
-	// Create virtual file pointer
-	$f = fopen('php://temp', 'w+');
+	$f = fopen('airports.csv', 'w+');
 	
 	// create curl resource 
 	$ch = curl_init(); 
@@ -31,4 +30,7 @@
 	        if (sizeof($line)==sizeof($headers))
 	          $result[] = array_combine($headers,$line);
 	print_r($result);
+	
+	fclose($f);
+	unlink('airports.csv');
 ?>
