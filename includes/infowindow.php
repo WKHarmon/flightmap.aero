@@ -21,18 +21,6 @@ $stmt->execute();
 $stmt->bind_result($timestamp, $photo, $checkin_thumbnail, $notes, $visited);
 $stmt->fetch();
 $stmt->close();
-
-if ($flights->flickr_user) {
-		$parameters = array(
-			'method' => 'flickr.photos.search',
-			'user_id' => $flights->flickr_user,
-			'tags' => $identifier,
-			'privacy_filter' => 1,
-			'safe_search' => 1,
-			'sort' => 'date-taken-desc'
-		);
-		$photos = json_decode($flights->getFlickr($parameters));
-}
 ?>
 <div id="content">
 	<div id="titleblock">
@@ -49,29 +37,6 @@ if ($timestamp > 1) {
 		print "<a id=\"checkin_thumbnail\" href=\"$photo\" class=\"colorbox\"><img src=\"$checkin_thumbnail\" height=\"36\" width=\"36\" alt=\"Thumbnail\"/></a>\n";
 	}
 	print "$notes</div>\n";
-}
-
-if ($photos->photos->total > 0) {
-	$total = $photos->photos->total;
-	$count = 0;
-	$closed = 0;
-	print '<table id="photos"><tr>';
-	foreach ($photos->photos->photo as $photo) {
-		$image = constructFlickrURL($photo, 'z');
-		$title = $photo->title;
-		if ($count < 3) {
-			$thumbnail = constructFlickrURL($photo, 's');
-			print "<td><a href=\"$image\" rel=\"gallery\" title=\"$title\" class=\"gallery_link colorbox\"><img src=\"$thumbnail\" alt=\"$title\" height=\"75\" width=\"75\" /></a></td>\n";
-			$count++;
-		} else {
-			if ($closed == 0) {
-				print "</tr><tr><td colspan=\"3\" id=\"total_photos\">$total photos</td></tr>\n";
-				print "</table>\n";
-				$closed = 1;
-			}
-			print "<a href=\"$image\" rel=\"gallery\" title=\"$title\" class=\"gallery_link colorbox\" style=\"display:none;\">Image</a>\n";
-		}
-	}
 }
 
 if ($flights->authenticated) {
