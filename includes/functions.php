@@ -117,72 +117,6 @@ class flights {
 		}
 	}
 	
-	function setFourSquare() {
-		global $foursquare_clientid, $foursquare_clientsecret;
-		$code = $_REQUEST['code'];
-		$url = "https://foursquare.com/oauth2/access_token?client_id=$foursquare_clientid&client_secret=$foursquare_clientsecret&grant_type=authorization_code&redirect_uri=https://flightmap.aero/ajax.php&code=$code";
-		$response = json_decode(curl_get($url));
-		if ($response-> error) {
-			print "Error: ".$response->error;
-			exit;
-		} elseif ($response->access_token) {
-			$sql = "UPDATE users SET foursquare = ? WHERE id = ?";
-			$stmt = $this->mysqli->prepare($sql);
-			$stmt->bind_param('si', $response->access_token, $this->displayuser);
-			$stmt->execute();
-			$this->foursquare = $response->access_token;
-			print '<html><body>Foursquare link was successful!</body></html>';
-			exit;
-		} else {
-			print "Something went wrong, but I have no idea what. :(";
-			exit;
-		}
-		
-	}
-	
-	function setFlickr() {
-		global $flickr_key, $flickr_secret;
-		$frob = $_REQUEST['frob'];
-		$method = 'flickr.auth.getToken';
-		$parameters = array(
-			'api_key' => $flickr_key,
-			'frob' => $frob,
-			'method' => $method,
-			'format' => 'json',
-			'nojsoncallback' => 1
-		);
-		
-		ksort($parameters);
-		
-		$sigstring = $flickr_secret;
-		$url = "https://api.flickr.com/services/rest/?";
-		
-		foreach ($parameters as $key=>$value) {
-			$sigstring .= $key;
-			$sigstring .= $value;
-			$url .= "&$key=$value";
-		}
-		
-		$api_sig = md5($sigstring);
-
-		$url .= "&api_sig=$api_sig";
-
-		$response = json_decode(curl_get($url));
-		
-		if ($response->stat == 'fail') {
-			print "Flickr auth failed! " . $response->code . ": ". $response->message;
-		} else {
-			$this->flickr_user = $response->auth->user->nsid;
-			$this->flickr_token = $response->auth->token->_content;
-			$sql = "UPDATE users SET flickr_token = ?, flickr_user = ? WHERE id = ?";
-			$stmt = $this->mysqli->prepare($sql);
-			$stmt->bind_param('ssi', $this->flickr_token, $this->flickr_user, $this->displayuser);
-			$stmt->execute();
-			$redirect = "https://" . $_SERVER['SERVER_NAME'] . "/" . $this->username;
-			header("Location: $redirect");
-		}
-	}
-	
 	function getUserAirports() {
 		if (isset($this->userAirports)) return $this->userAirports;
 		$sql = "SELECT DISTINCT SiteNumber, LocationID, State, ARPLatitudeS, ARPLongitudeS, visited
@@ -205,33 +139,6 @@ class flights {
 		
 		$this->userAirports = $airports;
 		return $this->userAirports;
-	}
-	
-	function getFlickr($parameters, $returnurl=false) {
-		global $flickr_key, $flickr_secret;
-		$parameters['api_key'] = $flickr_key;
-		$parameters['format'] = 'json';
-		$parameters['nojsoncallback'] = 1;
-		$parameters['auth_token'] = $this->flickr_token;
-		
-		$url = "https://api.flickr.com/services/rest/?";
-		$sigstring = $flickr_secret;
-		
-		ksort($parameters);
-		
-		foreach ($parameters as $key => $value) {
-			$sigstring .= $key.$value;
-			$url .= "&$key=$value";
-		}
-		
-		$api_sig = md5($sigstring);
-		
-		$url .= "&api_sig=$api_sig";
-		
-		if ($returnurl) return $url;
-		
-		$result = curl_get($url);
-		return $result;
 	}
 	
 	function getGeoAirports() {
@@ -323,79 +230,6 @@ class flights {
 		$stmt->bind_param('si', $title, $this->displayuser);
 		$stmt->execute();
 	}
-	
-	function getFoursquare() {
-		global $db_host, $db_username, $db_password, $db_name;
-		$sql = "SELECT id, foursquare, last_check
-					FROM users
-					WHERE foursquare != ''";
-		$stmt = $this->mysqli->prepare($sql);
-		$stmt->execute();
-		$stmt->bind_result($userid, $foursquare, $last_checked);
-		
-		while ($stmt->fetch()) {
-			$url = "https://api.foursquare.com/v2/users/self/checkins?oauth_token=$foursquare&afterTimestamp=$last_checked&v=20131204&limit=250";
-			$result = json_decode(curl_get($url));
-			if ($result->meta->errorType) {
-				mail('kyle@kyleharmon.com', 'Flightmap.aero Foursquare Error', $result->meta->errorDetail);
-				$updatesql = new mymysqli($db_host, $db_username, $db_password, $db_name);
-				$sql = "UPDATE users SET foursquare = null WHERE id = ?";
-				$update = $updatesql->prepare($sql);
-				$update->bind_param('i', $userid);
-				$update->execute();
-				$update->close();
-			} else {
-				$last_timestamp = $result->response->checkins->items[0]->createdAt;
-				foreach ($result->response->checkins->items as $item) {
-					$shout = $item->shout;
-					if (strpos(strtolower($shout), strtolower($this->keyword)) !== false) {
-						if ($item->location->lat) {
-							$lat = $item->location->lat;
-							$lng = $item->location->lng;
-						} elseif ($item->venue->location->lat) {
-							$lat = $item->venue->location->lat;
-							$lng = $item->venue->location->lng;
-						} else {
-							continue;
-						}
-						
-						if ($item->photos->count > 0) {
-							$item->photo = $item->photos->items[0]->url;
-							$item->thumbnail = $item->photos->items[0]->sizes->items[3]->url;
-						}
-						
-						$item->minLat = $lat - .02;
-						$item->maxLat = $lat + .02;
-						$item->minLng = $lng - .02;
-						$item->maxLng = $lng + .02;
-						
-						$updatesql = new mymysqli($db_host, $db_username, $db_password, $db_name);
-						$sql = "REPLACE INTO userdata (checkin, userid, airportid, time, visited, notes, photo, thumbnail)
-									SELECT ?, ?, SiteNumber, ?, 1, ?, ?, ? FROM airports
-									WHERE ARPLatitudeS BETWEEN ? and ?
-									AND ARPLongitudeS BETWEEN ? and ?
-									AND Type = 'AIRPORT'
-									AND Access = 'PU'
-									AND AirportStatusCode = 'O'
-									LIMIT 1";
-						$update = $updatesql->prepare($sql);
-						$update->bind_param('siisssdddd', $item->id, $userid, $item->createdAt, $item->shout, $item->photo, $item->thumbnail, $item->minLat, $item->maxLat, $item->minLng, $item->maxLng);
-						$update->execute();
-						$update->close();
-					}
-				}
-				
-				if ($last_timestamp > 0) {
-					$updatesql = new mymysqli($db_host, $db_username, $db_password, $db_name);
-					$sql = "UPDATE users SET last_check = ? WHERE id = ?";
-					$update = $updatesql->prepare($sql);
-					$update->bind_param('ii', $last_timestamp, $userid);
-					$update->execute();
-					$update->close();
-				}
-			}
-		}
-	}
 }
 
 function showerror($string) {
@@ -411,13 +245,5 @@ function curl_get($url) {
 	$response = curl_exec($ch);
 	curl_close($ch);
 	return $response;
-}
-
-function constructFlickrURL($object, $size='z') {
-	$farm = $object->farm;
-	$server = $object->server;
-	$id = $object->id;
-	$secret = $object->secret;
-	return "https://farm".$farm.".static.flickr.com/".$server."/".$id."_".$secret."_".$size.".jpg";
 }
 ?>
