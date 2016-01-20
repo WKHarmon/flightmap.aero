@@ -1,0 +1,11 @@
+<?
+$db_username = '';
+$db_password = '';
+$db_name = '';
+$db_host = '';
+$google_key = '';
+$foursquare_clientid = '';
+$foursquare_clientsecret = '';
+$flickr_key = '';
+$flickr_secret = '';
+?>
