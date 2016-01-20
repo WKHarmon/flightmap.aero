@@ -80,12 +80,6 @@ if (count($states) > 0) {
 EOT;
   	} else {
   	echo "<div id=\"control\" class=\"overlay\">\n";
-  		if (!$flights->flickr_user) {
-  			print '<li><a href="/ajax.php?action=flickr_redirect">Link Flickr</a></li>';
-  		}
-  		if (!$flights->foursquare) {
-  			print '<li><a href="/ajax.php?action=foursquare_redirect">Link Foursquare</a></li>';
-  		}
   		print '<li><a class="inline" href="#settitle">Set Title</a></li>';
   		print '<li><a class="inline" href="#setaddress">Set Default Location</a></li>';
   		print <<<EOT
