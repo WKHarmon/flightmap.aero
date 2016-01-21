@@ -34,7 +34,7 @@
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
 	    // Example insert - obviously use prepared statements/escaping/another DAL
 	    $stmt = $flights->mysqli->prepare($sql);
-	    $stmt->bind_param('ssssddsss', $row[0], $row[1], $row[2], $row[6], floatval($row[23]), floatval($row[25]), $row[13], $row[53]);
+	    $stmt->bind_param('ssssddss', $row[0], $row[1], $row[2], $row[6], floatval($row[23]), floatval($row[25]), $row[13], $row[53]);
 	    $stmt->execute();
 	/*    $result[$number]['SiteNumber'] = $row[0];
 	    $result[$number]['LocationID'] = $row[2];
