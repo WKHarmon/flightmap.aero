@@ -120,7 +120,7 @@ class flights {
 	function getUserAirports() {
 		if (isset($this->userAirports)) return $this->userAirports;
 		$sql = "SELECT DISTINCT SiteNumber, LocationID, State, ARPLatitudeS, ARPLongitudeS, visited
-					FROM airports_simplfiied JOIN userdata ON airports_simplified.SiteNumber = userdata.airportid
+					FROM airports_simplified JOIN userdata ON airports_simplified.SiteNumber = userdata.airportid
 					WHERE userdata.userid = ? and visited = 1";
 		
 		$stmt = $this->mysqli->prepare($sql);
