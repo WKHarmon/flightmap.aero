@@ -22,21 +22,19 @@
 	rewind($f);
 	
 	// Parse output to an array
-	$result = array();
-	$number = 0;
-	$row = fgetcsv($f, 0, "\t"); // throw away the headder row
+	$header = fgetcsv($f, 0, "\t"); // throw away the headder row
 	
 	// truncate the existing table
 	$sql = 'TRUNCATE airports_simplified';
 	$stmt = $flights->mysqli->prepare($sql);
 	$stmt->execute();
 	
-	$sql = 'INSERT INTO airports_simplified (SiteNumber, LocationID, AirportType, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?)';
+	$sql = 'INSERT INTO airports_simplified (SiteNumber, AirportType, LocationID, State, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?)';
 	
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
 	    // Example insert - obviously use prepared statements/escaping/another DAL
 	    $stmt = $flights->mysqli->prepare($sql);
-	    $stmt->bind_param('ssddsss', $row[0], $row[2], $row[23], $row[25], $row[1], $row[13], $row[53]);
+	    $stmt->bind_param('ssssddsss', $row[0], $row[1], $row[2], $row[6], floatval($row[23]), floatval($row[25]), $row[13], $row[53]);
 	    $stmt->execute();
 	/*    $result[$number]['SiteNumber'] = $row[0];
 	    $result[$number]['LocationID'] = $row[2];
@@ -51,5 +49,5 @@
 	fclose($f);
 	unlink('airports.csv');
 	echo ("Success!");
-	exit;
+	exit;s
 ?>

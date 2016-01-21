@@ -120,7 +120,7 @@ class flights {
 	function getUserAirports() {
 		if (isset($this->userAirports)) return $this->userAirports;
 		$sql = "SELECT DISTINCT SiteNumber, LocationID, State, ARPLatitudeS, ARPLongitudeS, visited
-					FROM airports JOIN userdata ON airports.SiteNumber = userdata.airportid
+					FROM airports_simplfiied JOIN userdata ON airports_simplified.SiteNumber = userdata.airportid
 					WHERE userdata.userid = ? and visited = 1";
 		
 		$stmt = $this->mysqli->prepare($sql);
@@ -149,8 +149,8 @@ class flights {
 		$maxLong = $_REQUEST['maxLong'];
 		
 		$sql = "select SiteNumber, LocationID, ARPLatitudeS, ARPLongitudeS, 0
-					FROM airports
-					WHERE ARPLatitudeS between ? and ? AND ARPLongitudeS between ? and ? AND Type = 'AIRPORT' AND Access = 'PU' AND AirportStatusCode = 'O'
+					FROM airports_simplified
+					WHERE ARPLatitudeS between ? and ? AND ARPLongitudeS between ? and ? AND AirportType = 'AIRPORT' AND AirportUse = 'PU' AND AirportStatusCode = 'O'
 					AND SiteNumber NOT IN (SELECT airportid FROM userdata WHERE userid = ? AND visited = 1)";
 		
 		$stmt = $this->mysqli->prepare($sql);
@@ -173,8 +173,8 @@ class flights {
 	function getStateTotals() {
 		if (isset($this->stateTotals)) return $this->stateTotals;
 		$sql = "SELECT State, count(*)
-					FROM airports
-					WHERE Type = 'AIRPORT' AND Access = 'PU' AND AirportStatusCode = 'O'
+					FROM airports_simplified
+					WHERE AirportType = 'AIRPORT' AND AirportUse = 'PU' AND AirportStatusCode = 'O'
 					GROUP BY State";
 		$stmt = $this->mysqli->prepare($sql);
 		$stmt->execute();
