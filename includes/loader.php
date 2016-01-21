@@ -29,7 +29,7 @@
 	$stmt = $flights->mysqli->prepare($sql);
 	$stmt->execute();
 	
-	$sql = 'INSERT INTO airports_simplified (SiteNumber, AirportType, LocationID, State, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?)';
+	$sql = 'INSERT INTO airports_simplified (SiteNumber, AirportType, LocationID, State, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
 	
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
 	    // Example insert - obviously use prepared statements/escaping/another DAL
