@@ -30,10 +30,10 @@
 	$stmt->execute();
 	
 	$sql = 'INSERT INTO airports_simplified (SiteNumber, AirportType, LocationID, State, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-	
+    $stmt = $flights->mysqli->prepare($sql);
+
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
 	    // Example insert - obviously use prepared statements/escaping/another DAL
-	    $stmt = $flights->mysqli->prepare($sql);
 	    $stmt->bind_param('ssssddss', $row[0], $row[1], $row[2], $row[6], substr(floatval($row[23]), 0, -1), substr(floatval($row[25]), 0, -1), $row[13], $row[53]);
 	    $stmt->execute();
 	/*    $result[$number]['SiteNumber'] = $row[0];
