@@ -33,8 +33,8 @@
     $stmt = $flights->mysqli->prepare($sql);
 
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
-	    $lat = (substr($row[23], -1) == "N" ? substr($row[23], 0, -1) : substr($row[23], 0, -1) * -1);
-	    $lon = (substr($row[25], -1) == "E" ? substr($row[25], 0, -1) : substr($row[25], 0, -1) * -1);
+	    $lat = (substr($row[23], -1) == "N" ? substr($row[23], 0, -1) : substr($row[23], 0, -1) * -1) * 0.000277778;
+	    $lon = (substr($row[25], -1) == "E" ? substr($row[25], 0, -1) : substr($row[25], 0, -1) * -1) * 0.000277778;
 	    $identifier = ltrim($row[2], "'");
 	    $stmt->bind_param('ssssddss', $row[0], $row[1], $identifier, $row[6], $lat, $lon, $row[13], $row[53]);
 	    $stmt->execute();
