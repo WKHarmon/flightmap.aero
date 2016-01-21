@@ -432,8 +432,8 @@ $image = <<<EOF
 <g id="States" transform="matrix(1.00433, 0, 0, 1.00906, -19.9329, -136.405)">
 EOF;
 
-$sql = "SELECT DISTINCT State from airports
-			JOIN userdata ON airports.SiteNumber = userdata.airportid
+$sql = "SELECT DISTINCT State from airports_simplified
+			JOIN userdata ON airports_simplified.SiteNumber = userdata.airportid
 			JOIN users on userdata.userid = users.id
 			WHERE visited = 1
 			AND LOWER(username) = ?";		

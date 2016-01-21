@@ -1,7 +1,7 @@
 <?
 $sitenumber = $_REQUEST['airportid'];
 $sql = "SELECT LocationID, City, State, FacilityName
-			FROM airports
+			FROM airports_simplified
 			WHERE SiteNumber = ?";
 $stmt = $flights->mysqli->prepare($sql);
 $stmt->bind_param('s', $_REQUEST['airportid']);
