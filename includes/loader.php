@@ -23,14 +23,21 @@
 	
 	// Parse output to an array
 	$result = array();
-	if (($headers = fgetcsv($f, 0, "\t")) !== FALSE)
-	  if ($headers)
-	    while (($line = fgetcsv($f, 0, "\t")) !== FALSE) 
-	      if ($line)
-	        if (sizeof($line)==sizeof($headers))
-	          $result[] = array_combine($headers,$line);
-	print_r($result);
+	$number = 0;
+	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
+	    // Example insert - obviously use prepared statements/escaping/another DAL
+	    $result[$number]['SiteNumber'] = $row[0];
+	    $result[$number]['LocationID'] = $row[2];
+	    $result[$number]['ARPLatitudeS'] = $row[23];
+	    $result[$number]['ARPLongitudeS'] = $row[25];
+	    $result[$number]['Type'] = $row[1];
+	    $result[$number]['Use'] = $row[13];
+	    $result[$number]['AirportStatusCode'] = $row[53];
+	    $number++;
+	}
 	
 	fclose($f);
 	unlink('airports.csv');
+	
+	print_r($result);
 ?>
