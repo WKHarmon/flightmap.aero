@@ -30,7 +30,7 @@
 	$stmt->execute();
 	
 	$sql = 'INSERT INTO airports_simplified (SiteNumber, AirportType, LocationID, State, ARPLatitudeS, ARPLongitudeS, AirportUse, AirportStatusCode, City, FacilityName) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    $stmt = $flights->mysqli->prepare($sql);
+	$stmt = $flights->mysqli->prepare($sql);
 
 	while (($row = fgetcsv($f, 0, "\t")) !== FALSE) {
 	    $lat = (substr($row[23], -1) == "N" ? substr($row[23], 0, -1) : substr($row[23], 0, -1) * -1) * 0.000277778;
@@ -51,5 +51,5 @@
 	fclose($f);
 	unlink('airports.csv');
 	echo ("Success!");
-	exit;s
+	exit;
 ?>
