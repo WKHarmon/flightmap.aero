@@ -11,7 +11,7 @@
 	// create curl resource 
 	$ch = curl_init(); 
 	// set url 
-	curl_setopt($ch, CURLOPT_URL, "http://www.faa.gov/airports/airport_safety/airportdata_5010/menu/nfdcfacilitiesexport.cfm?Region=&District=&State=&County=&City=&Use=PU&Certification="); 
+	curl_setopt($ch, CURLOPT_URL, "https://www.faa.gov/airports/airport_safety/airportdata_5010/menu/nfdcfacilitiesexport.cfm?Region=&District=&State=&County=&City=&Use=PU&Certification="); 
 	curl_setopt($ch, CURLOPT_FILE, $f);
 	//return the transfer as a string 
 	// $output contains the output string 
